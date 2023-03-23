@@ -1,0 +1,273 @@
+---
+title: "1. Analysis of Response Rates and Response Propensity"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{1. Analysis of Response Rates and Response Propensity}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup, echo=FALSE, message=FALSE, warning=FALSE}
+suppressPackageStartupMessages({
+  library(nrba)
+  library(survey)
+  library(dplyr)
+})
+```
+
+The starting point of any nonresponse bias analysis is to calculate response rates, since nonresponse bias can only occur when a survey or census’s response rate is below 100%. When response rates are below 100%, nonresponse bias will arise if both of the following patterns occur:
+
+-	Certain subpopulations are less likely to respond to the survey than others, and
+
+-	Those subpopulations differ in outcomes we are trying to measure.
+
+In this vignette, we show how to compare response rates across subpopulations and check whether observed differences reflect statistically signficant differences likelihood of responding to a survey (referred to as **"response propensity"**).
+
+
+# Calculating response rates
+
+## Data Needs
+
+To calculate response rates, it's not enough to look at just the data from individuals who ultimately responded to the survey; **we need a dataset that includes every individual from whom a response was sought**. For example, if a school sent out an email survey to parents, then to calculate response rates we would need a list of *all* the parents to whom an email was sent, regardless of whether that parent ultimately responded. For example, we would need a data file with a response status variable for each parent, as in the example table below:
+
+```{r, echo=FALSE}
+involvement_survey_srs |>
+  mutate(RESPONSE_STATUS = case_when(
+    RESPONSE_STATUS == "Respondent" ~ "1 (Respondent)",
+    RESPONSE_STATUS == "Nonrespondent" ~ "2 (Nonrespondent)",
+    RESPONSE_STATUS == "Ineligible" ~ "3 (Ineligible)",
+    RESPONSE_STATUS == "Unknown" ~ "4 (Unknown Eligibility)"
+  )) |>
+  select(UNIQUE_ID, RESPONSE_STATUS) |>
+  group_by(RESPONSE_STATUS) |>
+  sample_n(size = 2) |>
+  ungroup() |>
+  sample_n(size = 8, replace = FALSE) |>
+  knitr::kable()
+```
+
+
+With such a dataset, we need to classify each individual's response status into one of four categories:
+
+- **Ineligible**: This individual was asked to complete the survey, but it was discovered that they were not eligible. For example, if a person was invited to complete a school parent survey and that person replied that they are not in fact a parent, that person would be classified as ineligible.
+
+- **Eligible Respondent**: This individual completed the survey and was in fact eligible to do so.
+
+- **Eligible Nonrespondent**: This individual did not complete the survey, but it is known that they were eligible to do so. For example, a parent may respond to a school's emails for purposes such as communicating with teachers, but they may not respond to a survey invitation sent to their email. In this example, it is thus known that the person is a nonrespondent and that they were in fact eligible for the survey.
+
+- **Unknown Eligibility**: It is unknown whether this individual was eligible to complete the survey. For example, suppose a mail survey was sent to a random sample of addresses in a school district, where the survey was meant to include only parents of school-aged children. If a given address never replies to the survey and it is thus unknown whether any parents live at that address, then the case would be classified as having unknown eligibility.
+
+## Specifying a Response Rate Analysis
+
+The function `calculate_response_rates()` can be used to calculate the response rate for a survey once all of the records in the data have been grouped into the four categories. The argument `status` identifies the variable in the data used to indicate response status, and the argument `status_codes` allows the user to specify how the categories of that variable should be interpreted. The result is a data frame, with the response rate given in the column `RR3_Unweighted` and the underlying counts given in the columns `n`, `n_ER`, `n_EN`, etc.
+
+```{r}
+# Load example data
+data('involvement_survey_srs', package = "nrba")
+
+# Calculate overall response rates for the survey
+calculate_response_rates(
+  data = involvement_survey_srs,
+  status = "RESPONSE_STATUS",
+  status_codes = c(
+    'ER' = 'Respondent',
+    'EN' = 'Nonrespondent',
+    'IE' = 'Ineligible',
+    'UE' = 'Unknown'
+  ),
+  rr_formula = 'RR1'
+)
+```
+
+If the survey uses weights to account for unequal probabilities of selection, then the name of a weight variable can be supplied to the `weights` argument. The output variables `Nhat`, `Nhat_ER`, etc. provide weighted versions of the variables `n`, `n_ER`, etc.
+
+```{r}
+# Load example data
+data('involvement_survey_str2s', package = "nrba")
+
+# Calculate overall response rates for the survey
+calculate_response_rates(
+  data = involvement_survey_str2s,
+  weights = "BASE_WEIGHT",
+  status = "RESPONSE_STATUS",
+  status_codes = c(
+    'ER' = 'Respondent',
+    'EN' = 'Nonrespondent',
+    'IE' = 'Ineligible',
+    'UE' = 'Unknown'
+  ),
+  rr_formula = 'RR1'
+)
+```
+
+## Calculate response rates by group
+
+To calculate response rates separately by groups, we can first group the input data using the `group_by()` function from the popular 'dplyr' package.
+
+```{r}
+library(dplyr)
+
+involvement_survey_srs |>
+  group_by(STUDENT_RACE) |>
+  calculate_response_rates(
+    status = "RESPONSE_STATUS",
+    status_codes = c(
+      'ER' = 'Respondent',
+      'EN' = 'Nonrespondent',
+      'IE' = 'Ineligible',
+      'UE' = 'Unknown'
+    ),
+    rr_formula = 'RR1'
+  )
+```
+
+## Formulas for calculating response rates
+
+When every person invited to participate in a survey is known to be eligible for the survey, it is quite easy to calculate a response rate: simply count the number of respondents and divide this count by the total number of respondents and nonrespondents. Response rate calculations become more complicated when there are cases with unknown eligibility.
+
+When there are cases with unknown eligibility, the common convention is to use one of the response rate formulas promulgated by the American Association for Public Opinion Research (AAPOR); see @theamericanassociationforpublicopinionresearchStandardDefinitionsFinal2016. The three most commonly-used formulas are referred to as "RR1", "RR3", and "RR5". Response rates can be calculated using one or more formulas by supplying the formula names to the `rr_formula` argument of `calculate_response_rates()`.
+
+```{r, echo=FALSE}
+calculate_response_rates(
+  data = involvement_survey_srs,
+  status = "RESPONSE_STATUS",
+  status_codes = c(
+    'ER' = 'Respondent',
+    'EN' = 'Nonrespondent',
+    'IE' = 'Ineligible',
+    'UE' = 'Unknown'
+  ),
+  rr_formula = c('RR1', 'RR3', 'RR5')
+)
+```
+
+These formulas differ only in how many cases with unknown eligibility are estimated to in fact be eligible for the survey.
+
+$$
+\begin{aligned}
+RR1 &= ER / (ER + EN + UE) \\
+RR3 &= ER / (ER + EN + (e \times UE)) \\
+RR5 &= ER / (ER + EN) \\
+&\text{where:} \\
+ER &\text{ is the total number of eligible respondents} \\
+EN &\text{ is the total number of eligible nonrespondents} \\
+UE &\text{ is the total number of cases whose eligibility is unknown} \\
+&\text{and} \\
+e &\text{ is an *estimate* of the percent of unknown eligibility cases} \\
+&\text{which are in fact eligible}
+\end{aligned}
+$$
+For the RR3 formula, it is necessary to produce an estimate of the share of unknown eligibility cases who are in fact eligible, denoted $e$. One common estimation method is the "CASRO" method: among cases with known eligibility status, calculate the percent who are known to be eligible.
+
+$$
+\begin{aligned}
+\text{CASRO}&\text{ method:} \\
+e &= 1 - \frac{IE}{IE + ER + EN} \\
+&\text{where:} \\
+IE &\text{ is the total number of sampled cases known to be ineligible} \\
+\end{aligned}
+$$
+
+When calculating response rates for population subgroups, one can either assume the eligibility rate $e$ is constant across all subgroups or one can estimate the eligibility rate separately for each subgroup. When using the CASRO method to estimate the eligibility rate, the former approach is referred to as the "CASRO overall" method, while the latter approach is referred to as the "CASRO subgroup" method. Either option can be used by specifying either `elig_method='CASRO-overall'` or `elig_method='CASRO-subgroup'`.
+
+```{r}
+
+involvement_survey_srs |>
+  group_by(PARENT_HAS_EMAIL) |>
+  calculate_response_rates(
+    status = "RESPONSE_STATUS",
+    status_codes = c(
+      'ER' = 'Respondent',
+      'EN' = 'Nonrespondent',
+      'IE' = 'Ineligible',
+      'UE' = 'Unknown'
+    ),
+    rr_formula = 'RR3',
+    elig_method = "CASRO-subgroup"
+  )
+```
+
+Alternatively, the user may specify a specific value of $e$ to use for response rates or a variable in the data to use which specifies a value of $e$ for different groups.
+
+```{r}
+involvement_survey_srs %>%
+  mutate(e_by_email = ifelse(PARENT_HAS_EMAIL == 'Has Email', 0.75, 0.25)) %>%
+  group_by(PARENT_HAS_EMAIL) %>%
+  calculate_response_rates(status = "RESPONSE_STATUS",
+                           status_codes = c(
+                             'ER' = 'Respondent',
+                             'EN' = 'Nonrespondent',
+                             'IE' = 'Ineligible',
+                             'UE' = 'Unknown'
+                           ),
+                           rr_formula = "RR3",
+                           elig_method = "specified",
+                           e = "e_by_email")
+```
+
+
+# Testing for differences in response propensity by subpopulation
+
+To check whether observed differences in response rates are attributable to random sampling, we can use a Chi-Squared test. This test evaluates whether the observed differences in response rates between categories of an auxiliary variable are attributable simply to random sampling rather than subpopulations having different likelihoods of responding to the survey. If the p-value for this test is quite small, then there is evidence that an observed difference in response rates between subpopulations in the sample is unlikely to have arisen simply because of random sampling.
+
+To ensure that the Chi-Squared test correctly takes into account the sample design, it is necessary to create a survey design object using the 'survey' package. The following example demonstrates the creation of a survey design object for a stratified multistage sample.
+
+```{r}
+library(survey)
+
+# Create a survey design object with the 'survey' package
+involvement_svy <- svydesign(
+  data = involvement_survey_str2s,
+  weights = ~ BASE_WEIGHT,
+  strata =  ~ SCHOOL_DISTRICT,
+  ids =     ~ SCHOOL_ID             + UNIQUE_ID, # School ID and Student ID
+  fpc =     ~ N_SCHOOLS_IN_DISTRICT + N_STUDENTS_IN_SCHOOL # Population sizes at each sampling stage
+)
+```
+
+With the survey design object thus created, we can use the function `chisq_test_ind_response()` to test whether response status is independent of auxiliary variables using a Chi-Square test (with Rao-Scott's second-order adjustment for complex survey designs).
+
+```{r}
+chisq_test_ind_response(
+  survey_design = involvement_svy,
+  # Specify the response status variable
+  status = "RESPONSE_STATUS",
+  # Specify how to interpret categories of response status variable
+  status_codes = c(
+    'ER' = 'Respondent',
+    'EN' = 'Nonrespondent',
+    'IE' = 'Ineligible',
+    'UE' = 'Unknown'
+  ),
+  # Specify variable(s) to use for the Chi-Square test(s)
+  aux_vars = c("STUDENT_RACE", "PARENT_HAS_EMAIL")
+)
+```
+
+# Modeling response propensity using logistic regression
+
+To better understand the relationship between response propensity and auxiliary variables, it can be helpful to model response status directly. The function `predict_response_status_via_glm()` facilitates the modeling process.
+
+```{r}
+predict_response_status_via_glm(
+  survey_design = involvement_svy,
+  status = "RESPONSE_STATUS",
+  status_codes = c("ER" = "Respondent",
+                   "EN" = "Nonrespondent",
+                   "IE" = "Ineligible",
+                   "UE" = "Unknown"),
+  # Specify models
+  model_selection = 'main-effects',
+  # Specify predictor variables for the model
+  numeric_predictors = c("STUDENT_AGE"),
+  categorical_predictors = c("PARENT_HAS_EMAIL", "STUDENT_RACE")
+)
+```
+

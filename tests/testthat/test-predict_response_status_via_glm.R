@@ -1,0 +1,170 @@
+library(survey)
+
+# Create a survey design ----
+  data(involvement_survey_str2s, package = 'nrba')
+
+  survey_design <- survey_design <- svydesign(
+    data = involvement_survey_str2s,
+    weights = ~ BASE_WEIGHT,
+    strata =  ~ SCHOOL_DISTRICT,
+    ids =     ~ SCHOOL_ID             + UNIQUE_ID,
+    fpc =     ~ N_SCHOOLS_IN_DISTRICT + N_STUDENTS_IN_SCHOOL
+  )
+
+# Prepare data for modeling ----
+  model_input_data <- survey_design |>
+    subset(RESPONSE_STATUS %in% c("Respondent", "Nonrespondent")) |>
+    transform(IS_RESPONDENT = ifelse(RESPONSE_STATUS == "Respondent", 1, 0))
+
+# Fit a pre-specified model ----
+
+  result <- predict_response_status_via_glm(
+    survey_design = survey_design,
+    status = "RESPONSE_STATUS",
+    status_codes = c("ER" = "Respondent",
+                     "EN" = "Nonrespondent",
+                     "IE" = "Ineligible",
+                     "UE" = "Unknown"),
+    model_selection = 'main-effects',
+    numeric_predictors = c("STUDENT_AGE"),
+    categorical_predictors = c("PARENT_HAS_EMAIL", "STUDENT_GRADE")
+  )
+
+  expected_model <- svyglm(
+    design = model_input_data,
+    formula = IS_RESPONDENT ~ STUDENT_AGE + PARENT_HAS_EMAIL + STUDENT_GRADE,
+    family = quasibinomial(link = 'logit')
+  )
+
+  expected_results <- dplyr::bind_cols(
+    expected_model |> summary() |> getElement("coefficients") |>
+      as.data.frame() |>
+      `colnames<-`(c("exp_estimated_coefficient",
+                     "exp_se_coefficient",
+                     "exp_t_value_coefficient",
+                     "exp_p_value_coefficient")) |>
+      tibble::rownames_to_column("coefficient"),
+    confint(expected_model, level = 0.95) |>
+    as.data.frame() |>
+    `colnames<-`(c("exp_conf_intrvl_lower",
+                   "exp_conf_intrvl_upper"))
+  ) |> `rownames<-`(NULL)
+  expected_results[['variable']] <- stringr::str_extract(
+    expected_results[['coefficient']],
+    "PARENT_HAS_EMAIL|STUDENT_AGE|STUDENT_GRADE|\\(Intercept\\)"
+  )
+  expected_results[['variable_category']] <- stringr::str_remove(
+    expected_results[['coefficient']],
+    "PARENT_HAS_EMAIL|STUDENT_AGE|STUDENT_GRADE|intercept"
+  )
+  expected_results[['variable_category']] <- ifelse(
+    expected_results[['variable_category']] %in% c("", "(Intercept)"), NA_character_,
+    expected_results[['variable_category']]
+  )
+
+  compiled_results <- dplyr::full_join(
+    x = result,
+    y = expected_results,
+    by = c("variable", "variable_category")
+  )
+
+  testthat::expect_equal(
+    object = compiled_results$estimated_coefficient,
+    expected = compiled_results$exp_estimated_coefficient
+  )
+  testthat::expect_equal(
+    object = compiled_results$se_coefficient,
+    expected = compiled_results$exp_se_coefficient
+  )
+  testthat::expect_equal(
+    object = compiled_results$conf_intrvl_lower,
+    expected = compiled_results$exp_conf_intrvl_lower
+  )
+  testthat::expect_equal(
+    object = compiled_results$conf_intrvl_upper,
+    expected = compiled_results$exp_conf_intrvl_upper
+  )
+  testthat::expect_equal(
+    object = compiled_results$p_value_coefficient,
+    expected = compiled_results$exp_p_value_coefficient
+  )
+
+# Use stepwise selection ----
+
+  suppressMessages({
+    result <- predict_response_status_via_glm(
+      survey_design = survey_design,
+      status = "RESPONSE_STATUS",
+      status_codes = c("ER" = "Respondent",
+                       "EN" = "Nonrespondent",
+                       "IE" = "Ineligible",
+                       "UE" = "Unknown"),
+      model_selection = 'stepwise', selection_controls = list(
+        alpha_enter = 0.45, alpha_remain = 0.45,
+        max_iterations = 5
+      ),
+      numeric_predictors = c("STUDENT_AGE"),
+      categorical_predictors = c("PARENT_HAS_EMAIL", "STUDENT_GRADE", "STUDENT_SEX")
+    )
+
+    expected_model <- stepwise_model_selection(
+      survey_design = model_input_data,
+      outcome_variable = "IS_RESPONDENT",
+      predictor_variables = c("STUDENT_AGE", "PARENT_HAS_EMAIL", "STUDENT_GRADE", "STUDENT_SEX"),
+      model_type = "binary-logistic",
+      max_iterations = 5, alpha_enter = 0.45, alpha_remain = 0.45
+    )
+  })
+
+  expected_results <- dplyr::bind_cols(
+    expected_model |> summary() |> getElement("coefficients") |>
+      as.data.frame() |>
+      `colnames<-`(c("exp_estimated_coefficient",
+                     "exp_se_coefficient",
+                     "exp_t_value_coefficient",
+                     "exp_p_value_coefficient")) |>
+      tibble::rownames_to_column("coefficient"),
+    confint(expected_model, level = 0.95) |>
+      as.data.frame() |>
+      `colnames<-`(c("exp_conf_intrvl_lower",
+                     "exp_conf_intrvl_upper"))
+  ) |> `rownames<-`(NULL)
+  expected_results[['variable']] <- stringr::str_extract(
+    expected_results[['coefficient']],
+    "PARENT_HAS_EMAIL|STUDENT_AGE|STUDENT_GRADE|STUDENT_SEX|\\(Intercept\\)"
+  )
+  expected_results[['variable_category']] <- stringr::str_remove(
+    expected_results[['coefficient']],
+    "PARENT_HAS_EMAIL|STUDENT_AGE|STUDENT_GRADE|STUDENT_SEX|intercept"
+  )
+  expected_results[['variable_category']] <- ifelse(
+    expected_results[['variable_category']] %in% c("", "(Intercept)"), NA_character_,
+    expected_results[['variable_category']]
+  )
+
+  compiled_results <- dplyr::full_join(
+    x = result,
+    y = expected_results,
+    by = c("variable", "variable_category")
+  )
+
+  testthat::expect_equal(
+    object = compiled_results$estimated_coefficient,
+    expected = compiled_results$exp_estimated_coefficient
+  )
+  testthat::expect_equal(
+    object = compiled_results$se_coefficient,
+    expected = compiled_results$exp_se_coefficient
+  )
+  testthat::expect_equal(
+    object = compiled_results$conf_intrvl_lower,
+    expected = compiled_results$exp_conf_intrvl_lower
+  )
+  testthat::expect_equal(
+    object = compiled_results$conf_intrvl_upper,
+    expected = compiled_results$exp_conf_intrvl_upper
+  )
+  testthat::expect_equal(
+    object = compiled_results$p_value_coefficient,
+    expected = compiled_results$exp_p_value_coefficient
+  )
