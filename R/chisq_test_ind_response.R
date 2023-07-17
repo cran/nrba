@@ -110,6 +110,16 @@ chisq_test_ind_response <- function(survey_design, status, status_codes = c("ER"
     stop("The data contains values in the status variable which are not listed in `status_codes`.")
   }
 
+  ##_ Auxiliary variables
+
+  if (missing(aux_vars) || is.null(aux_vars)) {
+    stop("Must specify variable names for `aux_vars`.")
+  } else {
+    if (!all(aux_vars %in% colnames(survey_design[["variables"]]))) {
+      stop("Some of the specified `aux_vars` do not appear in `survey_design`.")
+    }
+  }
+
   # Subset the survey design object if necessary
 
   survey_design$variables[["__STATUS__"]] <- survey_design$variables[[status]]

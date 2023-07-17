@@ -10,7 +10,7 @@ follows:
 
 > Schneider B, Green J, Brock S, Krenzke T, Jones M, Van de Kerckhove W,
 > Ferraro D, Alvarez-Rojas L, Hubbell K (2023). “nrba: Methods for
-> Conducting Nonresponse Bias Analysis.” R package version 0.1.0.
+> Conducting Nonresponse Bias Analysis.” R package version 0.2.0.
 > Copyright: Westat, Inc.
 
 The ‘nrba’ package facilitates nonresponse bias analysis (NRBA) for
@@ -59,7 +59,7 @@ data("involvement_survey_srs", package = "nrba")
 
 ### Analyzing Response Rates
 
-Of the 5,000 parents sampled for the survey, there are only 2,961 who
+Of the 5,000 parents sampled for the survey, there are only 3,011 who
 were eligible respondents to the survey. To understand the level of
 nonresponse for the survey, we can calculate response rates using the
 response rate formulas promulgated by the American Association of Public
@@ -79,7 +79,7 @@ overall_response_rates <- involvement_survey_srs |>
 
 print(overall_response_rates)
 #>   RR3_Unweighted    n n_ER n_EN n_IE n_UE   e_unwtd
-#> 1      0.6238782 5000 2961 1563  242  234 0.9492237
+#> 1      0.6331604 5000 3011 1521  233  235 0.9511018
 ```
 
 To understand how response rates vary across different subpopulations,
@@ -100,23 +100,23 @@ we can calculate response rates for different groups.
 ```
 
     #> # A tibble: 14 × 9
-    #>    PARENT_HAS_EMAIL STUDENT_RACE   RR3_U…¹     n  n_ER  n_EN  n_IE  n_UE e_unwtd
-    #>    <chr>            <chr>            <dbl> <int> <int> <int> <int> <int>   <dbl>
-    #>  1 Has Email        AM7 (American…   0.758    40    28     8     3     1   0.923
-    #>  2 Has Email        AS7 (Asian)      0.712    39    27     9     1     2   0.973
-    #>  3 Has Email        BL7 (Black or…   0.693   575   378   139    28    30   0.949
-    #>  4 Has Email        HI7 (Hispanic…   0.356   807   273   457    38    39   0.951
-    #>  5 Has Email        MU7 (Two or M…   0.662   114    72    31     5     6   0.954
-    #>  6 Has Email        PI7 (Native H…   0.682    25    15     7     3     0   0.88 
-    #>  7 Has Email        WH7 (White)      0.688  2662  1740   668   126   128   0.950
-    #>  8 No Email         AM7 (American…   0.667     7     4     2     1     0   0.857
-    #>  9 No Email         AS7 (Asian)      0.4       5     2     3     0     0   1    
-    #> 10 No Email         BL7 (Black or…   0.676   119    79    30     2     8   0.982
-    #> 11 No Email         HI7 (Hispanic…   0.318   141    41    85    12     3   0.913
-    #> 12 No Email         MU7 (Two or M…   0.667    24    16     8     0     0   1    
-    #> 13 No Email         PI7 (Native H…   0.667    10     6     3     1     0   0.9  
-    #> 14 No Email         WH7 (White)      0.684   432   280   113    22    17   0.947
-    #> # … with abbreviated variable name ¹​RR3_Unweighted
+    #>    PARENT_HAS_EMAIL STUDENT_RACE    RR3_Unweighted     n  n_ER  n_EN  n_IE  n_UE
+    #>    <chr>            <chr>                    <dbl> <int> <int> <int> <int> <int>
+    #>  1 Has Email        AM7 (American …          0.690    29    20     8     0     1
+    #>  2 Has Email        AS7 (Asian)              0.771    41    30     7     2     2
+    #>  3 Has Email        BL7 (Black or …          0.696   592   387   141    34    30
+    #>  4 Has Email        HI7 (Hispanic …          0.346   771   253   446    38    34
+    #>  5 Has Email        MU7 (Two or Mo…          0.713    89    57    22     9     1
+    #>  6 Has Email        PI7 (Native Ha…          0.847    27    22     3     1     1
+    #>  7 Has Email        WH7 (White)              0.701  2685  1795   644   117   129
+    #>  8 No Email         AM7 (American …          0.875     8     7     1     0     0
+    #>  9 No Email         AS7 (Asian)              0.455    11     4     4     2     1
+    #> 10 No Email         BL7 (Black or …          0.632   131    78    37     7     9
+    #> 11 No Email         HI7 (Hispanic …          0.317   125    38    77     5     5
+    #> 12 No Email         MU7 (Two or Mo…          0.696    23    16     6     0     1
+    #> 13 No Email         PI7 (Native Ha…          0.556    10     5     4     1     0
+    #> 14 No Email         WH7 (White)              0.679   458   299   121    17    21
+    #> # ℹ 1 more variable: e_unwtd <dbl>
 
 ### Testing for Systematic Differences in Response Propensities
 
@@ -145,8 +145,8 @@ chisq_test_ind_response(
   aux_vars = c("PARENT_HAS_EMAIL", "STUDENT_RACE")
 )
 #>   auxiliary_variable statistic ndf   ddf      p_value
-#> 1   PARENT_HAS_EMAIL  1.081471   1  4523 2.984242e-01
-#> 2       STUDENT_RACE 64.600969   6 27138 4.941136e-80
+#> 1   PARENT_HAS_EMAIL  1.965074   1  4531 1.610401e-01
+#> 2       STUDENT_RACE 70.005249   6 27186 6.654778e-87
 #>                                           test_method variance_method
 #> 1 Rao-Scott Chi-Square test (second-order adjustment)   linearization
 #> 2 Rao-Scott Chi-Square test (second-order adjustment)   linearization
@@ -179,11 +179,11 @@ comparison_of_respondent_sample_to_full_eligible_sample |>
     difference, std_error, p_value
   )
 #>            outcome outcome_category resp_mean elig_mean   difference
-#> 1 PARENT_HAS_EMAIL        Has Email 0.8554542 0.8514589  0.003995352
-#> 2 PARENT_HAS_EMAIL         No Email 0.1445458 0.1485411 -0.003995352
-#>     std_error   p_value
-#> 1 0.003880093 0.3031981
-#> 2 0.003880093 0.3031981
+#> 1 PARENT_HAS_EMAIL        Has Email 0.8515443 0.8462048  0.005339571
+#> 2 PARENT_HAS_EMAIL         No Email 0.1484557 0.1537952 -0.005339571
+#>     std_error  p_value
+#> 1 0.003862094 0.166862
+#> 2 0.003862094 0.166862
 ```
 
 ### Comparing Characteristics of Respondents to External Benchmark Data
@@ -221,12 +221,12 @@ t_test_vs_external_estimate(
   y_var = "PARENT_HAS_EMAIL",
   ext_ests = parent_email_benchmark
 )
-#>    category  estimate external_estimate  difference   std_error     p_value
-#> 1 Has Email 0.8554542              0.83  0.02545424 0.006462868 8.38725e-05
-#> 2  No Email 0.1445458              0.17 -0.02545424 0.006462868 8.38725e-05
+#>    category  estimate external_estimate  difference   std_error      p_value
+#> 1 Has Email 0.8515443              0.83  0.02154434 0.006480225 0.0008959752
+#> 2  No Email 0.1484557              0.17 -0.02154434 0.006480225 0.0008959752
 #>   t_statistic   df
-#> 1    3.938536 2959
-#> 2   -3.938536 2959
+#> 1    3.324628 3009
+#> 2   -3.324628 3009
 ```
 
 ### Comparing Estimates from Respondents, Before and After Weighting Adjustments
@@ -275,9 +275,9 @@ comparison_before_and_after_raking |>
          Original_mean, Adjusted_mean,
          difference, p_value)
 #>                 outcome outcome_category Original_mean Adjusted_mean
-#> 1 WHETHER_PARENT_AGREES            AGREE     0.5417089     0.5181013
-#> 2 WHETHER_PARENT_AGREES         DISAGREE     0.4582911     0.4818987
+#> 1 WHETHER_PARENT_AGREES            AGREE     0.5562936     0.5280613
+#> 2 WHETHER_PARENT_AGREES         DISAGREE     0.4437064     0.4719387
 #>    difference      p_value
-#> 1  0.02360761 2.106909e-15
-#> 2 -0.02360761 2.106909e-15
+#> 1  0.02823232 8.153992e-17
+#> 2 -0.02823232 8.153992e-17
 ```

@@ -300,12 +300,14 @@ predict_outcome_via_glm <- function(survey_design,
   coefs_table <- dplyr::inner_join(
     x = coefficients_table,
     y = variable_coefficient_lookup,
-    by = "name_coefficient"
+    by = "name_coefficient",
+    relationship = "many-to-many"
   )
   combined_summary_table <- dplyr::full_join(
     x = anova_table,
     y = coefs_table,
-    by = "term"
+    by = "term",
+    relationship = "many-to-many"
   )
 
   for (i in seq_len(nrow(combined_summary_table))) {
@@ -355,6 +357,24 @@ predict_outcome_via_glm <- function(survey_design,
     "LRT_chisq_statistic", "LRT_DEff", "LRT_df_numerator", "LRT_df_denominator"
   )
   combined_summary_table <- combined_summary_table[result_columns]
+
+  # For categorical predictors, get a list of the reference levels
+  categorical_predictor_levels <- lapply(names(final_model$xlevels), \(name) {
+    data.frame(variable = name,
+               variable_category = final_model$xlevels[[name]],
+               stringsAsFactors = FALSE)
+  }) |> do.call(what = rbind)
+
+  reference_levels <- NULL
+  if (!is.null(categorical_predictor_levels)) {
+    reference_levels <- dplyr::anti_join(
+      x = categorical_predictor_levels,
+      y = combined_summary_table,
+      by = c("variable", "variable_category")
+    )
+  }
+
+  attr(combined_summary_table, 'reference_levels') <- reference_levels
 
   # Return result
   return(combined_summary_table)

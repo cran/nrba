@@ -354,7 +354,7 @@ measure.</p></li>
 </ul>
 <p>In this vignette, we show how to compare response rates across
 subpopulations and check whether observed differences reflect
-statistically signficant differences likelihood of responding to a
+statistically significant differences in likelihoods of responding to a
 survey (referred to as <strong>“response propensity”</strong>).</p>
 <div id="calculating-response-rates" class="section level1">
 <h1>Calculating response rates</h1>
@@ -378,35 +378,35 @@ example table below:</p>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">ID_17993</td>
-<td align="left">2 (Nonrespondent)</td>
+<td align="left">ID_17965</td>
+<td align="left">1 (Respondent)</td>
 </tr>
 <tr class="even">
-<td align="left">ID_19474</td>
+<td align="left">ID_08943</td>
 <td align="left">4 (Unknown Eligibility)</td>
 </tr>
 <tr class="odd">
-<td align="left">ID_00113</td>
+<td align="left">ID_04764</td>
 <td align="left">3 (Ineligible)</td>
 </tr>
 <tr class="even">
-<td align="left">ID_17214</td>
-<td align="left">1 (Respondent)</td>
-</tr>
-<tr class="odd">
-<td align="left">ID_18052</td>
-<td align="left">4 (Unknown Eligibility)</td>
-</tr>
-<tr class="even">
-<td align="left">ID_11768</td>
+<td align="left">ID_05225</td>
 <td align="left">2 (Nonrespondent)</td>
 </tr>
 <tr class="odd">
-<td align="left">ID_12438</td>
+<td align="left">ID_07048</td>
+<td align="left">4 (Unknown Eligibility)</td>
+</tr>
+<tr class="even">
+<td align="left">ID_08097</td>
+<td align="left">2 (Nonrespondent)</td>
+</tr>
+<tr class="odd">
+<td align="left">ID_10270</td>
 <td align="left">1 (Respondent)</td>
 </tr>
 <tr class="even">
-<td align="left">ID_11255</td>
+<td align="left">ID_01970</td>
 <td align="left">3 (Ineligible)</td>
 </tr>
 </tbody>
@@ -465,7 +465,7 @@ etc.</p>
 <span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>  <span class="at">rr_formula =</span> <span class="st">&#39;RR1&#39;</span></span>
 <span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>)</span>
 <span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a><span class="co">#&gt;   RR1_Unweighted    n n_ER n_EN n_IE n_UE</span></span>
-<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a><span class="co">#&gt; 1      0.6223203 5000 2961 1563  242  234</span></span></code></pre></div>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a><span class="co">#&gt; 1      0.6316342 5000 3011 1521  233  235</span></span></code></pre></div>
 <p>If the survey uses weights to account for unequal probabilities of
 selection, then the name of a weight variable can be supplied to the
 <code>weights</code> argument. The output variables <code>Nhat</code>,
@@ -487,10 +487,10 @@ selection, then the name of a weight variable can be supplied to the
 <span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>  ),</span>
 <span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>  <span class="at">rr_formula =</span> <span class="st">&#39;RR1&#39;</span></span>
 <span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a>)</span>
-<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a><span class="co">#&gt;   RR1_Unweighted RR1_Weighted    n    Nhat n_ER Nhat_ER n_EN Nhat_EN n_IE</span></span>
-<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a><span class="co">#&gt; 1      0.5747126    0.5662812 1000 20268.6  550   11007  363 7672.66   43</span></span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a><span class="co">#&gt;   RR1_Unweighted RR1_Weighted    n    Nhat n_ER  Nhat_ER n_EN Nhat_EN n_IE</span></span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a><span class="co">#&gt; 1      0.6516736    0.6286321 1000 20012.2  623 11967.32  284 6066.26   44</span></span>
 <span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a><span class="co">#&gt;   Nhat_IE n_UE Nhat_UE</span></span>
-<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a><span class="co">#&gt; 1  831.26   44  757.68</span></span></code></pre></div>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a><span class="co">#&gt; 1  975.12   49  1003.5</span></span></code></pre></div>
 </div>
 <div id="calculate-response-rates-by-group" class="section level2">
 <h2>Calculate response rates by group</h2>
@@ -512,16 +512,15 @@ popular ‘dplyr’ package.</p>
 <span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>    <span class="at">rr_formula =</span> <span class="st">&#39;RR1&#39;</span></span>
 <span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>  )</span>
 <span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="co">#&gt; # A tibble: 7 × 7</span></span>
-<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="co">#&gt;   STUDENT_RACE                             RR1_U…¹     n  n_ER  n_EN  n_IE  n_UE</span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="co">#&gt;   STUDENT_RACE                      RR1_Unweighted     n  n_ER  n_EN  n_IE  n_UE</span></span>
 <span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;                                      &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;</span></span>
-<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a><span class="co">#&gt; 1 AM7 (American Indian or Alaska Native)     0.744    47    32    10     4     1</span></span>
-<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a><span class="co">#&gt; 2 AS7 (Asian)                                0.674    44    29    12     1     2</span></span>
-<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a><span class="co">#&gt; 3 BL7 (Black or African American)            0.688   694   457   169    30    38</span></span>
-<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a><span class="co">#&gt; 4 HI7 (Hispanic or Latino Ethnicity)         0.350   948   314   542    50    42</span></span>
-<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a><span class="co">#&gt; 5 MU7 (Two or More Races)                    0.662   138    88    39     5     6</span></span>
-<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a><span class="co">#&gt; 6 PI7 (Native Hawaiian or Other Pacific I…   0.677    35    21    10     4     0</span></span>
-<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a><span class="co">#&gt; 7 WH7 (White)                                0.686  3094  2020   781   148   145</span></span>
-<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a><span class="co">#&gt; # … with abbreviated variable name ¹​RR1_Unweighted</span></span></code></pre></div>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a><span class="co">#&gt; 1 AM7 (American Indian or Alaska N…          0.730    37    27     9     0     1</span></span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a><span class="co">#&gt; 2 AS7 (Asian)                                0.708    52    34    11     4     3</span></span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a><span class="co">#&gt; 3 BL7 (Black or African American)            0.682   723   465   178    41    39</span></span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a><span class="co">#&gt; 4 HI7 (Hispanic or Latino Ethnicit…          0.341   896   291   523    43    39</span></span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a><span class="co">#&gt; 5 MU7 (Two or More Races)                    0.709   112    73    28     9     2</span></span>
+<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a><span class="co">#&gt; 6 PI7 (Native Hawaiian or Other Pa…          0.771    37    27     7     2     1</span></span>
+<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a><span class="co">#&gt; 7 WH7 (White)                                0.696  3143  2094   765   134   150</span></span></code></pre></div>
 </div>
 <div id="formulas-for-calculating-response-rates" class="section level2">
 <h2>Formulas for calculating response rates</h2>
@@ -539,9 +538,9 @@ and “RR5”. Response rates can be calculated using one or more formulas
 by supplying the formula names to the <code>rr_formula</code> argument
 of <code>calculate_response_rates()</code>.</p>
 <pre><code>#&gt;   RR1_Unweighted RR3_Unweighted RR5_Unweighted    n n_ER n_EN n_IE n_UE
-#&gt; 1      0.6223203      0.6238782      0.6545093 5000 2961 1563  242  234
+#&gt; 1      0.6316342      0.6331604      0.6643866 5000 3011 1521  233  235
 #&gt;     e_unwtd
-#&gt; 1 0.9492237</code></pre>
+#&gt; 1 0.9511018</code></pre>
 <p>These formulas differ only in how many cases with unknown eligibility
 are estimated to in fact be eligible for the survey.</p>
 <p><span class="math display">\[
@@ -599,8 +598,8 @@ can be used by specifying either
 <span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 8</span></span>
 <span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a><span class="co">#&gt;   PARENT_HAS_EMAIL RR3_Unweighted     n  n_ER  n_EN  n_IE  n_UE e_unwtd</span></span>
 <span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;                     &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;   &lt;dbl&gt;</span></span>
-<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a><span class="co">#&gt; 1 Has Email                 0.626  4262  2533  1319   204   206   0.950</span></span>
-<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a><span class="co">#&gt; 2 No Email                  0.613   738   428   244    38    28   0.946</span></span></code></pre></div>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a><span class="co">#&gt; 1 Has Email                 0.637  4234  2564  1271   201   198   0.950</span></span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a><span class="co">#&gt; 2 No Email                  0.610   766   447   250    32    37   0.956</span></span></code></pre></div>
 <p>Alternatively, the user may specify a specific value of <span class="math inline">\(e\)</span> to use for response rates or a variable
 in the data to use which specifies a value of <span class="math inline">\(e\)</span> for different groups.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>involvement_survey_srs <span class="sc">%&gt;%</span></span>
@@ -619,8 +618,8 @@ in the data to use which specifies a value of <span class="math inline">\(e\)</s
 <span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 8</span></span>
 <span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a><span class="co">#&gt;   PARENT_HAS_EMAIL RR3_Unweighted     n  n_ER  n_EN  n_IE  n_UE e_unwtd</span></span>
 <span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;                     &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;   &lt;dbl&gt;</span></span>
-<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a><span class="co">#&gt; 1 Has Email                 0.632  4262  2533  1319   204   206    0.75</span></span>
-<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a><span class="co">#&gt; 2 No Email                  0.630   738   428   244    38    28    0.25</span></span></code></pre></div>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a><span class="co">#&gt; 1 Has Email                 0.644  4234  2564  1271   201   198    0.75</span></span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a><span class="co">#&gt; 2 No Email                  0.633   766   447   250    32    37    0.25</span></span></code></pre></div>
 </div>
 </div>
 <div id="testing-for-differences-in-response-propensity-by-subpopulation" class="section level1">
@@ -667,9 +666,9 @@ Rao-Scott’s second-order adjustment for complex survey designs).</p>
 <span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a>  <span class="at">aux_vars =</span> <span class="fu">c</span>(<span class="st">&quot;STUDENT_RACE&quot;</span>, <span class="st">&quot;PARENT_HAS_EMAIL&quot;</span>)</span>
 <span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a>)</span>
 <span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a><span class="co">#&gt; Subsetting to only compare eligible respondents to eligible nonrespondents: `RESPONSE_STATUS` in (&#39;Respondent&#39;,&#39;Nonrespondent&#39;)</span></span>
-<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a><span class="co">#&gt;   auxiliary_variable statistic      ndf      ddf      p_value</span></span>
-<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a><span class="co">#&gt; 1       STUDENT_RACE  15.55767 4.212788 337.0231 3.825157e-12</span></span>
-<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a><span class="co">#&gt; 2   PARENT_HAS_EMAIL   0.47917 1.000000  80.0000 4.908029e-01</span></span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a><span class="co">#&gt;   auxiliary_variable  statistic      ndf      ddf      p_value</span></span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a><span class="co">#&gt; 1       STUDENT_RACE 13.6560181 4.109016 328.7213 1.634543e-10</span></span>
+<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a><span class="co">#&gt; 2   PARENT_HAS_EMAIL  0.2941381 1.000000  80.0000 5.890885e-01</span></span>
 <span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a><span class="co">#&gt;                                           test_method variance_method</span></span>
 <span id="cb8-20"><a href="#cb8-20" tabindex="-1"></a><span class="co">#&gt; 1 Rao-Scott Chi-Square test (second-order adjustment)   linearization</span></span>
 <span id="cb8-21"><a href="#cb8-21" tabindex="-1"></a><span class="co">#&gt; 2 Rao-Scott Chi-Square test (second-order adjustment)   linearization</span></span></code></pre></div>
@@ -694,22 +693,21 @@ facilitates the modeling process.</p>
 <span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a>  <span class="at">categorical_predictors =</span> <span class="fu">c</span>(<span class="st">&quot;PARENT_HAS_EMAIL&quot;</span>, <span class="st">&quot;STUDENT_RACE&quot;</span>)</span>
 <span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a>)</span>
 <span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a><span class="co">#&gt; # A tibble: 9 × 12</span></span>
-<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a><span class="co">#&gt;   variable  variabl…¹ varia…² estima…³ se_co…⁴ conf_…⁵ conf_…⁶ p_valu…⁷ LRT_ch…⁸</span></span>
-<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;         &lt;dbl&gt; &lt;chr&gt;      &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;</span></span>
-<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a><span class="co">#&gt; 1 (Interce… NA        &lt;NA&gt;     1.04     0.900  -0.757   2.83   2.53e- 1  NA     </span></span>
-<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a><span class="co">#&gt; 2 PARENT_H…  6.58e- 1 No Ema… -0.150    0.342  -0.832   0.532  6.62e- 1   0.591 </span></span>
-<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a><span class="co">#&gt; 3 STUDENT_…  8.51e- 1 &lt;NA&gt;    -0.00538  0.0297 -0.0647  0.0539 8.57e- 1   0.0753</span></span>
-<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a><span class="co">#&gt; 4 STUDENT_…  7.85e-11 AS7 (A…  0.753    1.06   -1.37    2.87   4.82e- 1 132.    </span></span>
-<span id="cb9-21"><a href="#cb9-21" tabindex="-1"></a><span class="co">#&gt; 5 STUDENT_…  7.85e-11 BL7 (B…  0.0299   0.920  -1.80    1.86   9.74e- 1 132.    </span></span>
-<span id="cb9-22"><a href="#cb9-22" tabindex="-1"></a><span class="co">#&gt; 6 STUDENT_…  7.85e-11 HI7 (H… -1.92     0.841  -3.60   -0.247  2.51e- 2 132.    </span></span>
-<span id="cb9-23"><a href="#cb9-23" tabindex="-1"></a><span class="co">#&gt; 7 STUDENT_…  7.85e-11 MU7 (T… -2.26     0.921  -4.09   -0.423  1.66e- 2 132.    </span></span>
-<span id="cb9-24"><a href="#cb9-24" tabindex="-1"></a><span class="co">#&gt; 8 STUDENT_…  7.85e-11 PI7 (N… 14.0      1.06   11.9    16.1    5.55e-21 132.    </span></span>
-<span id="cb9-25"><a href="#cb9-25" tabindex="-1"></a><span class="co">#&gt; 9 STUDENT_…  7.85e-11 WH7 (W… -0.226    0.878  -1.98    1.52   7.97e- 1 132.    </span></span>
-<span id="cb9-26"><a href="#cb9-26" tabindex="-1"></a><span class="co">#&gt; # … with 3 more variables: LRT_DEff &lt;dbl&gt;, LRT_df_numerator &lt;int&gt;,</span></span>
-<span id="cb9-27"><a href="#cb9-27" tabindex="-1"></a><span class="co">#&gt; #   LRT_df_denominator &lt;dbl&gt;, and abbreviated variable names</span></span>
-<span id="cb9-28"><a href="#cb9-28" tabindex="-1"></a><span class="co">#&gt; #   ¹​variable_level_p_value, ²​variable_category, ³​estimated_coefficient,</span></span>
-<span id="cb9-29"><a href="#cb9-29" tabindex="-1"></a><span class="co">#&gt; #   ⁴​se_coefficient, ⁵​conf_intrvl_lower, ⁶​conf_intrvl_upper,</span></span>
-<span id="cb9-30"><a href="#cb9-30" tabindex="-1"></a><span class="co">#&gt; #   ⁷​p_value_coefficient, ⁸​LRT_chisq_statistic</span></span></code></pre></div>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a><span class="co">#&gt;   variable        variable_level_p_value variable_category estimated_coefficient</span></span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;                            &lt;dbl&gt; &lt;chr&gt;                             &lt;dbl&gt;</span></span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a><span class="co">#&gt; 1 (Intercept)                   NA       &lt;NA&gt;                            1.76   </span></span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a><span class="co">#&gt; 2 PARENT_HAS_EMA…                9.82e-1 No Email                       -0.00709</span></span>
+<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a><span class="co">#&gt; 3 STUDENT_AGE                    7.13e-1 &lt;NA&gt;                           -0.0113 </span></span>
+<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a><span class="co">#&gt; 4 STUDENT_RACE                   7.45e-9 AS7 (Asian)                     0.679  </span></span>
+<span id="cb9-21"><a href="#cb9-21" tabindex="-1"></a><span class="co">#&gt; 5 STUDENT_RACE                   7.45e-9 BL7 (Black or Af…              -0.298  </span></span>
+<span id="cb9-22"><a href="#cb9-22" tabindex="-1"></a><span class="co">#&gt; 6 STUDENT_RACE                   7.45e-9 HI7 (Hispanic or…              -2.14   </span></span>
+<span id="cb9-23"><a href="#cb9-23" tabindex="-1"></a><span class="co">#&gt; 7 STUDENT_RACE                   7.45e-9 MU7 (Two or More…               1.47   </span></span>
+<span id="cb9-24"><a href="#cb9-24" tabindex="-1"></a><span class="co">#&gt; 8 STUDENT_RACE                   7.45e-9 PI7 (Native Hawa…              13.3    </span></span>
+<span id="cb9-25"><a href="#cb9-25" tabindex="-1"></a><span class="co">#&gt; 9 STUDENT_RACE                   7.45e-9 WH7 (White)                    -0.690  </span></span>
+<span id="cb9-26"><a href="#cb9-26" tabindex="-1"></a><span class="co">#&gt; # ℹ 8 more variables: se_coefficient &lt;dbl&gt;, conf_intrvl_lower &lt;dbl&gt;,</span></span>
+<span id="cb9-27"><a href="#cb9-27" tabindex="-1"></a><span class="co">#&gt; #   conf_intrvl_upper &lt;dbl&gt;, p_value_coefficient &lt;dbl&gt;,</span></span>
+<span id="cb9-28"><a href="#cb9-28" tabindex="-1"></a><span class="co">#&gt; #   LRT_chisq_statistic &lt;dbl&gt;, LRT_DEff &lt;dbl&gt;, LRT_df_numerator &lt;int&gt;,</span></span>
+<span id="cb9-29"><a href="#cb9-29" tabindex="-1"></a><span class="co">#&gt; #   LRT_df_denominator &lt;dbl&gt;</span></span></code></pre></div>
 </div>
 
 

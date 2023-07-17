@@ -5,7 +5,7 @@
 \alias{involvement_survey_str2s}
 \title{Parent involvement survey: stratified, two-stage sample}
 \format{
-A data frame with 5,000 rows and 16 variables
+A data frame with 5,000 rows and 18 variables
 }
 \usage{
 involvement_survey_str2s
@@ -43,10 +43,10 @@ can be used to provide finite population corrections.
 \item{PARENT_HAS_EMAIL}{Whether parent has an e-mail address ('Has Email' vs 'No Email')}
 \item{PARENT_HAS_EMAIL_BENCHMARK}{Population benchmark for category of \code{PARENT_HAS_EMAIL}}
 \item{STUDENT_RACE_BENCHMARK}{Population benchmark for category of \code{STUDENT_RACE}}
+\item{N_SCHOOLS_IN_DISTRICT}{Total number of schools in each district}
+\item{N_STUDENTS_IN_SCHOOL}{Total number of students in each school}
 \item{BASE_WEIGHT}{Sampling weight to use for weighted estimates}
-\item{N_STUDENTS}{Total number of students in the population}
-\item{JKn_Rep_Wt_1 - JKn_Rep_Wt_95}{Numeric variables containing JKn jackknife replicate weights which can be used for variance estimation}
-\item{Boot_Rep_Wt_1 - Boot_Rep_Wt_50}{Numeric variables containing bootstrap replicate weights which can be used for variance estimation}
+\item{CONTACT_ATTEMPTS}{The number of contact attempts made for each case (ranges between 1 and 6)}
 }
 }
 
@@ -58,21 +58,13 @@ involvement_survey_str2s
 
   library(survey)
 
-  ##_ Can specify survey design explicitly
+  involvement_survey <- svydesign(
+    data = involvement_survey_str2s,
+    weights = ~ BASE_WEIGHT,
+    strata =  ~ SCHOOL_DISTRICT,
+    ids =     ~ SCHOOL_ID             + UNIQUE_ID,
+    fpc =     ~ N_SCHOOLS_IN_DISTRICT + N_STUDENTS_IN_SCHOOL
+  )
 
-    involvement_survey <- svydesign(
-      data = involvement_survey_str2s,
-      weights = ~ BASE_WEIGHT,
-      strata =  ~ SCHOOL_DISTRICT,
-      ids =     ~ SCHOOL_ID             + UNIQUE_ID,
-      fpc =     ~ N_SCHOOLS_IN_DISTRICT + N_STUDENTS_IN_SCHOOL
-    )
-
-  ##_ Can instead use provided replicate weights
-    involvement_survey <- svrepdesign(
-      data = involvement_survey_str2s,
-      weights = ~ BASE_WEIGHT,
-      repweights = "Boot_Rep_Wt"
-    )
 }
 \keyword{datasets}

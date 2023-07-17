@@ -131,3 +131,25 @@ rep_design <- as.svrepdesign(survey_design, type = "mrbbootstrap")
                                 aux_vars = "PARENT_HAS_EMAIL")
       }, regexp = "Subsetting to only compare")
     })
+
+# Expected error messages ----
+
+    test_that("Informative error messages for bad inputs", {
+      expect_error({
+        chisq_test_ind_response(survey_design = survey_design |>
+                                  subset(response_status %in% c(1,2)),
+                                status = "response_status",
+                                status_codes = c("ER" = 1, "EN" = 2,
+                                                 "IE" = 3, "UE" = 4),
+                                aux_vars = NULL)
+      }, regexp = "Must specify variable names")
+
+      expect_error({
+        chisq_test_ind_response(survey_design = survey_design |>
+                                  subset(response_status %in% c(1,2)),
+                                status = "response_status",
+                                status_codes = c("ER" = 1, "EN" = 2,
+                                                 "IE" = 3, "UE" = 4),
+                                aux_vars = "made_up_name")
+      }, regexp = "do not appear in")
+    })

@@ -33,7 +33,7 @@
 #' The variable \code{BASE_WEIGHT} provides the base sampling weight.
 #' The variable \code{N_STUDENTS_IN_SCHOOL} can be used to provide a finite population correction
 #' for variance estimation.
-#' @format A data frame with 5,000 rows and 16 variables
+#' @format A data frame with 5,000 rows and 17 variables
 #' @section Fields:
 #'
 #' \describe{
@@ -53,6 +53,7 @@
 #' \item{PARENT_HAS_EMAIL_BENCHMARK}{Population benchmark for category of \code{STUDENT_RACE}}
 #' \item{BASE_WEIGHT}{Sampling weight to use for weighted estimates}
 #' \item{N_STUDENTS}{Total number of students in the population}
+#' \item{CONTACT_ATTEMPTS}{The number of contact attempts made for each case (ranges between 1 and 6)}
 #' }
 #'
 #' @examples
@@ -74,7 +75,7 @@
 #' the first and second stage sampling units (schools and parents).
 #' The variables \code{N_SCHOOLS_IN_DISTRICT} and \code{N_STUDENTS_IN_SCHOOL}
 #' can be used to provide finite population corrections.
-#' @format A data frame with 5,000 rows and 16 variables
+#' @format A data frame with 5,000 rows and 18 variables
 #' @section Fields:
 #'
 #' \describe{
@@ -92,10 +93,10 @@
 #' \item{PARENT_HAS_EMAIL}{Whether parent has an e-mail address ('Has Email' vs 'No Email')}
 #' \item{PARENT_HAS_EMAIL_BENCHMARK}{Population benchmark for category of \code{PARENT_HAS_EMAIL}}
 #' \item{STUDENT_RACE_BENCHMARK}{Population benchmark for category of \code{STUDENT_RACE}}
+#' \item{N_SCHOOLS_IN_DISTRICT}{Total number of schools in each district}
+#' \item{N_STUDENTS_IN_SCHOOL}{Total number of students in each school}
 #' \item{BASE_WEIGHT}{Sampling weight to use for weighted estimates}
-#' \item{N_STUDENTS}{Total number of students in the population}
-#' \item{JKn_Rep_Wt_1 - JKn_Rep_Wt_95}{Numeric variables containing JKn jackknife replicate weights which can be used for variance estimation}
-#' \item{Boot_Rep_Wt_1 - Boot_Rep_Wt_50}{Numeric variables containing bootstrap replicate weights which can be used for variance estimation}
+#' \item{CONTACT_ATTEMPTS}{The number of contact attempts made for each case (ranges between 1 and 6)}
 #' }
 #'
 #' @examples
@@ -106,48 +107,12 @@
 #'
 #'   library(survey)
 #'
-#'   ##_ Can specify survey design explicitly
+#'   involvement_survey <- svydesign(
+#'     data = involvement_survey_str2s,
+#'     weights = ~ BASE_WEIGHT,
+#'     strata =  ~ SCHOOL_DISTRICT,
+#'     ids =     ~ SCHOOL_ID             + UNIQUE_ID,
+#'     fpc =     ~ N_SCHOOLS_IN_DISTRICT + N_STUDENTS_IN_SCHOOL
+#'   )
 #'
-#'     involvement_survey <- svydesign(
-#'       data = involvement_survey_str2s,
-#'       weights = ~ BASE_WEIGHT,
-#'       strata =  ~ SCHOOL_DISTRICT,
-#'       ids =     ~ SCHOOL_ID             + UNIQUE_ID,
-#'       fpc =     ~ N_SCHOOLS_IN_DISTRICT + N_STUDENTS_IN_SCHOOL
-#'     )
-#'
-#'   ##_ Can instead use provided replicate weights
-#'     involvement_survey <- svrepdesign(
-#'       data = involvement_survey_str2s,
-#'       weights = ~ BASE_WEIGHT,
-#'       repweights = "Boot_Rep_Wt"
-#'     )
 "involvement_survey_str2s"
-
-#' @title Replicate-specific scale factors for the parent involvement survey stratified, two-stage sample
-#'
-#' @format A list with elements \code{'bootstrap'} and \code{'JKn'},
-#' each a numeric vector of replicate-specific scale factors to supply to the
-#' \code{svrepdesign} function from the 'survey' package.
-#'
-#' @examples
-#' library(survey)
-#' data('involvement_survey_str2s', package = 'nrba')
-#'
-#' # Using jackknife replicates
-#' involvement_survey <- svrepdesign(
-#'   data = involvement_survey_str2s,
-#'   weights = ~ BASE_WEIGHT,
-#'   repweights = "JKn_Rep_Wt",
-#'   rscales = involvement_survey_str2s_rscales$JKn,
-#'   type = "JKn",
-#' )
-#' # Using bootstrap replicates
-#' involvement_survey <- svrepdesign(
-#'   data = involvement_survey_str2s,
-#'   weights = ~ BASE_WEIGHT,
-#'   repweights = "Boot_Rep_Wt",
-#'   rscales = involvement_survey_str2s_rscales$bootstrap,
-#'   type = "bootstrap",
-#' )
-"involvement_survey_str2s_rscales"

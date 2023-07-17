@@ -28,7 +28,7 @@ The starting point of any nonresponse bias analysis is to calculate response rat
 
 -	Those subpopulations differ in outcomes we are trying to measure.
 
-In this vignette, we show how to compare response rates across subpopulations and check whether observed differences reflect statistically signficant differences likelihood of responding to a survey (referred to as **"response propensity"**).
+In this vignette, we show how to compare response rates across subpopulations and check whether observed differences reflect statistically significant differences in likelihoods of responding to a survey (referred to as **"response propensity"**).
 
 
 # Calculating response rates

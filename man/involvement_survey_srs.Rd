@@ -5,7 +5,7 @@
 \alias{involvement_survey_srs}
 \title{Parent involvement survey: simple random sample}
 \format{
-A data frame with 5,000 rows and 16 variables
+A data frame with 5,000 rows and 17 variables
 }
 \usage{
 involvement_survey_srs
@@ -40,6 +40,7 @@ for variance estimation.
 \item{PARENT_HAS_EMAIL_BENCHMARK}{Population benchmark for category of \code{STUDENT_RACE}}
 \item{BASE_WEIGHT}{Sampling weight to use for weighted estimates}
 \item{N_STUDENTS}{Total number of students in the population}
+\item{CONTACT_ATTEMPTS}{The number of contact attempts made for each case (ranges between 1 and 6)}
 }
 }
 

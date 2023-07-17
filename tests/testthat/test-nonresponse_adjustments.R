@@ -12,14 +12,13 @@ data("involvement_survey_pop", package = 'nrba')
 
 # Create a replicate design
 
-base_weights_design <- survey::svrepdesign(
+base_weights_design <- svydesign(
   data = involvement_survey_str2s,
-  type = "JKn", weights = ~ BASE_WEIGHT,
-  repweights = involvement_survey_str2s[,c(sprintf("JKn_Rep_Wt_0%s", 1:9),
-                                           sprintf("JKn_Rep_Wt_%s", 10:95))],
-  rscales = nrba::involvement_survey_str2s_rscales[['JKn']],
-  variables = involvement_survey_str2s
-)
+  weights = ~ BASE_WEIGHT,
+  strata =  ~ SCHOOL_DISTRICT,
+  ids =     ~ SCHOOL_ID             + UNIQUE_ID,
+  fpc =     ~ N_SCHOOLS_IN_DISTRICT + N_STUDENTS_IN_SCHOOL
+) |> as.svrepdesign(type = "mrbbootstrap", replicates = 50)
 
 ue_adjusted_design <- base_weights_design |>
   wt_class_adjust(

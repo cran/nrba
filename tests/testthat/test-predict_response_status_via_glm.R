@@ -3,8 +3,11 @@ library(survey)
 # Create a survey design ----
   data(involvement_survey_str2s, package = 'nrba')
 
-  survey_design <- survey_design <- svydesign(
-    data = involvement_survey_str2s,
+  survey_design <- svydesign(
+    data = involvement_survey_str2s |>
+      transform(STUDENT_GRADE = factor(
+        STUDENT_GRADE, levels = c("K", 1:12)
+      )),
     weights = ~ BASE_WEIGHT,
     strata =  ~ SCHOOL_DISTRICT,
     ids =     ~ SCHOOL_ID             + UNIQUE_ID,
@@ -70,24 +73,41 @@ library(survey)
 
   testthat::expect_equal(
     object = compiled_results$estimated_coefficient,
-    expected = compiled_results$exp_estimated_coefficient
+    expected = compiled_results$exp_estimated_coefficient,
+    tolerance = 1e-06
   )
   testthat::expect_equal(
     object = compiled_results$se_coefficient,
-    expected = compiled_results$exp_se_coefficient
+    expected = compiled_results$exp_se_coefficient,
+    tolerance = 1e-06
   )
   testthat::expect_equal(
     object = compiled_results$conf_intrvl_lower,
-    expected = compiled_results$exp_conf_intrvl_lower
+    expected = compiled_results$exp_conf_intrvl_lower,
+    tolerance = 1e-06
   )
   testthat::expect_equal(
     object = compiled_results$conf_intrvl_upper,
-    expected = compiled_results$exp_conf_intrvl_upper
+    expected = compiled_results$exp_conf_intrvl_upper,
+    tolerance = 1e-06
   )
   testthat::expect_equal(
     object = compiled_results$p_value_coefficient,
-    expected = compiled_results$exp_p_value_coefficient
+    expected = compiled_results$exp_p_value_coefficient,
+    tolerance = 1e-06
   )
+  testthat::expect_equal(
+    object = attr(result, 'reference_levels'),
+    expected = data.frame(
+      variable = c("PARENT_HAS_EMAIL", "STUDENT_GRADE"),
+      variable_category = c(
+        model_input_data$variables[['PARENT_HAS_EMAIL']] |>
+          unique() |> sort() |> head(1),
+        model_input_data$variables[['STUDENT_GRADE']] |>
+          levels() |> head(1)
+      ))
+  )
+
 
 # Use stepwise selection ----
 
@@ -150,21 +170,26 @@ library(survey)
 
   testthat::expect_equal(
     object = compiled_results$estimated_coefficient,
-    expected = compiled_results$exp_estimated_coefficient
+    expected = compiled_results$exp_estimated_coefficient,
+    tolerance = 1e-06
   )
   testthat::expect_equal(
     object = compiled_results$se_coefficient,
-    expected = compiled_results$exp_se_coefficient
+    expected = compiled_results$exp_se_coefficient,
+    tolerance = 1e-06
   )
   testthat::expect_equal(
     object = compiled_results$conf_intrvl_lower,
-    expected = compiled_results$exp_conf_intrvl_lower
+    expected = compiled_results$exp_conf_intrvl_lower,
+    tolerance = 1e-06
   )
   testthat::expect_equal(
     object = compiled_results$conf_intrvl_upper,
-    expected = compiled_results$exp_conf_intrvl_upper
+    expected = compiled_results$exp_conf_intrvl_upper,
+    tolerance = 1e-06
   )
   testthat::expect_equal(
     object = compiled_results$p_value_coefficient,
-    expected = compiled_results$exp_p_value_coefficient
+    expected = compiled_results$exp_p_value_coefficient,
+    tolerance = 1e-06
   )

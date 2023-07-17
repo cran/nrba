@@ -1,6 +1,6 @@
 Package: nrba
 Title: Methods for Conducting Nonresponse Bias Analysis (NRBA)
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: 
     c(
       person(given = "Ben",
@@ -70,7 +70,7 @@ Config/testthat/edition: 3
 Depends: R (>= 4.1.0)
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2023-03-22 23:00:49 UTC; schneider_b
+Packaged: 2023-07-17 06:24:32 UTC; schneider_b
 Author: Ben Schneider [aut, cre] (<https://orcid.org/0000-0002-0406-8470>),
   Jim Green [aut],
   Shelley Brock [aut] (Author of original SAS macro, WesNRBA),
@@ -83,4 +83,4 @@ Author: Ben Schneider [aut, cre] (<https://orcid.org/0000-0002-0406-8470>),
   Westat [cph]
 Maintainer: Ben Schneider <BenjaminSchneider@westat.com>
 Repository: CRAN
-Date/Publication: 2023-03-23 09:50:02 UTC
+Date/Publication: 2023-07-17 06:50:02 UTC

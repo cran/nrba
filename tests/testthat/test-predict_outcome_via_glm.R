@@ -4,7 +4,10 @@ library(survey)
   data(involvement_survey_str2s, package = 'nrba')
 
   survey_design <- survey_design <- svydesign(
-    data = involvement_survey_str2s,
+    data = involvement_survey_str2s |>
+      transform(STUDENT_GRADE = factor(
+        STUDENT_GRADE, levels = c("K", 1:12)
+      )),
     weights = ~ BASE_WEIGHT,
     strata =  ~ SCHOOL_DISTRICT,
     ids =     ~ SCHOOL_ID             + UNIQUE_ID,
@@ -91,6 +94,17 @@ library(survey)
   testthat::expect_equal(
     object = compiled_results$p_value_coefficient,
     expected = compiled_results$exp_p_value_coefficient
+  )
+  testthat::expect_equal(
+    object = attr(result, 'reference_levels'),
+    expected = data.frame(
+      variable = c("PARENT_HAS_EMAIL", "STUDENT_GRADE"),
+      variable_category = c(
+        model_input_data$variables[['PARENT_HAS_EMAIL']] |>
+          unique() |> sort() |> head(1),
+        model_input_data$variables[['STUDENT_GRADE']] |>
+          levels() |> head(1)
+      ))
   )
 
   ##_ Continuous outcome variable ----

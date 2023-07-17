@@ -51,10 +51,6 @@ whether to extend the data collection period or make additional contact attempts
 library(survey)
 data(involvement_survey_srs, package = "nrba")
 
-involvement_survey_srs[["CONTACT_ATTEMPTS"]] <- runif(
-  n = nrow(involvement_survey_srs),
-  min = 1, max = 8
-) |> round()
 
 survey_design <- svydesign(
   weights = ~BASE_WEIGHT,
