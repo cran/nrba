@@ -17,13 +17,11 @@
 #' A dataframe of cumulative estimates. The first column--whose name matches \code{predictor_variable}--gives
 #' describes the values of \code{predictor_variable} for which a given estimate was computed.
 #' The other columns of the result include the following:
-#' \itemize{
-#'  \item{"outcome"}{: The name of the variable for which estimates are computed}
-#'  \item{"outcome_category"}{: For a categorical variable, the category of that variable}
-#'  \item{"estimate"}{: The estimated mean or proportion.}
-#'  \item{"std_error"}{: The estimated standard error}
-#'  \item{"respondent_sample_size"}{: The number of cases used to produce the estimate (excluding missing values)}
-#' }
+#'  \item{outcome}{The name of the variable for which estimates are computed}
+#'  \item{outcome_category}{For a categorical variable, the category of that variable}
+#'  \item{estimate}{The estimated mean or proportion.}
+#'  \item{std_error}{The estimated standard error}
+#'  \item{respondent_sample_size}{The number of cases used to produce the estimate (excluding missing values)}
 #'
 #' @export
 #' @references

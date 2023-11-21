@@ -1,3 +1,11 @@
+# nrba 0.3.1
+
+* Increased version number for CRAN re-submission.
+
+# nrba 0.3.0
+
+* Added a new analysis, `assess_range_of_bias()`, which allows users to assess the range of potential bias based on assumptions about how nonrespondents differ from respondents.
+
 # nrba 0.2.0
 
 * The regression analysis types (`predict_response_status_via_glm()` and `predict_outcome_via_glm()`) now invisibly return an attribute named `reference_levels`. It can be retrieved using `attr(x, 'reference_levels')`. This is a data frame which lists, for each categorical predictor, the category used as a reference level in the regression. It is mainly useful for supporting the `idcnrba` package.

@@ -5,6 +5,8 @@
 #' where the full sample consists of all cases regardless of response status or eligibility status. \cr
 #' The function \code{t_test_resp_vs_elig} tests whether means differ between the responding sample and the eligible sample,
 #' where the eligible sample consists of all cases known to be eligible, regardless of response status.
+#'
+#' See Lohr and Riddles (2016) for the statistical theory of this test.
 #' @param survey_design A survey design object created with the `survey` package.
 #' @param y_vars Names of dependent variables for tests. For categorical variables, percentages of each category are tested.
 #' @param na.rm Whether to drop cases with missing values for a given dependent variable.
@@ -31,16 +33,21 @@
 #' Because the two means are based on overlapping groups and thus have correlated sampling errors, special care is taken to estimate the covariance of the two estimates.
 #' For designs which use sets of replicate weights for variance estimation, the two means and their difference are estimated using each set of replicate weights;
 #' the estimated differences from the sets of replicate weights are then used to estimate sampling error with a formula appropriate to the replication method (JKn, BRR, etc.).
-#' For designs which use linearization methods for variance estimation, the covariance between the two means is estimated using the method of linearization based on influence functions implemented in the \code{survey} package. See Osier (2009) for an overview of the method of linearization based on influence functions. \cr
+#' For designs which use linearization methods for variance estimation, the covariance between the two means is estimated using the method of linearization based on influence functions implemented in the \code{survey} package.
+#' See Osier (2009) for an overview of the method of linearization based on influence functions.
+#' Eckman et al. (2023) showed in a simulation study that linearization and replication
+#' performed similarly in estimating the variance of a difference in means for overlapping samples. \cr
 #' \cr
 #' Unless specified otherwise using the \code{degrees_of_freedom} parameter, the degrees of freedom for the test are set to the design degrees of freedom minus one.
 #' Design degrees of freedom are estimated using the \code{survey} package's \code{degf} method. \cr
 #' \cr
-#' See Amaya and Presser (2017) and Van de Kerckhove et al. (2009) for examples of a nonresponse bias analysis which uses t-tests to compare responding samples to eligible samples.
 #' See Lohr and Riddles (2016) for the statistical details of this test.
+#' See Van de Kerckhove et al. (2009) and  Amaya and Presser (2017)
+#' for examples of a nonresponse bias analysis which uses t-tests to compare responding samples to eligible samples.
 #'
 #' @references
 #' - Amaya, A., Presser, S. (2017). \emph{Nonresponse Bias for Univariate and Multivariate Estimates of Social Activities and Roles}. Public Opinion Quarterly, Volume 81, Issue 1, 1 March 2017, Pages 1–36, https://doi.org/10.1093/poq/nfw037
+#' - Eckman, S., Unangst, J., Dever, J., Antoun, A. (2023). \emph{The Precision of Estimates of Nonresponse Bias in Means}. Journal of Survey Statistics and Methodology, 11(4), 758-783. https://doi.org/10.1093/jssam/smac019
 #' - Lohr, S., Riddles, M. (2016). \emph{Tests for Evaluating Nonresponse Bias in Surveys}. Survey Methodology 42(2): 195-218. https://www150.statcan.gc.ca/n1/pub/12-001-x/2016002/article/14677-eng.pdf
 #' - Osier, G. (2009). \emph{Variance estimation for complex indicators of poverty and inequality using linearization techniques}. Survey Research Methods, 3(3), 167-195. https://doi.org/10.18148/srm/2009.v3i3.369
 #' - Van de Kerckhove, W., Krenzke, T., and Mohadjer, L. (2009). \emph{Adult Literacy and Lifeskills Survey (ALL) 2003: U.S. Nonresponse Bias Analysis (NCES 2009-063)}. National Center for Education Statistics, Institute of Education Sciences, U.S. Department of Education. Washington, DC.

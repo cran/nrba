@@ -10,7 +10,7 @@ follows:
 
 > Schneider B, Green J, Brock S, Krenzke T, Jones M, Van de Kerckhove W,
 > Ferraro D, Alvarez-Rojas L, Hubbell K (2023). “nrba: Methods for
-> Conducting Nonresponse Bias Analysis.” R package version 0.2.0.
+> Conducting Nonresponse Bias Analysis.” R package version 0.3.1.
 > Copyright: Westat, Inc.
 
 The ‘nrba’ package facilitates nonresponse bias analysis (NRBA) for
@@ -26,7 +26,10 @@ selection. Multiple types of analyses may be conducted:
 - Comparisons of sample-based estimates to external population benchmark
   data
 - Modeling of outcomes and response status as a function of covariates
-- Calculating differences in estimates
+- Level-of-effort analyses based on comparing estimates from different
+  stages of data collection or with varying numbers of contact attempts
+- Assessments of the range of potential bias based on varying
+  assumptions about differences between respondents and nonrespondents
 
 Extensive documentation and references are provided for each type of
 analysis. Variance estimation and weighting methods are implemented
@@ -160,7 +163,7 @@ the respondent sample to means and percentages calculated using data
 from the entire sample.
 
 ``` r
-comparison_of_respondent_sample_to_full_eligible_sample <- t_test_resp_vs_elig(
+comp_of_resp_vs_full_eligible <- t_test_resp_vs_elig(
   survey_design = involvement_survey,
   y_vars = c("PARENT_HAS_EMAIL"),
   status = "RESPONSE_STATUS",
@@ -172,7 +175,7 @@ comparison_of_respondent_sample_to_full_eligible_sample <- t_test_resp_vs_elig(
   )
 )
 
-comparison_of_respondent_sample_to_full_eligible_sample |>
+comp_of_resp_vs_full_eligible |>
   select(
     outcome, outcome_category,
     resp_mean, elig_mean,
@@ -238,12 +241,13 @@ which can easily be created using the ‘survey’ package.
 
 ``` r
 # Create bootstrap replicate weights
-replicate_design <- as.svrepdesign(involvement_survey, type = "bootstrap",
-                                   replicates = 500)
+replicate_design <- involvement_survey |>
+  as.svrepdesign(type = "bootstrap",
+                 replicates = 500)
 
 # Subset to only respondents (always subset *after* creating replicate weights)
-rep_svy_respondents <- subset(replicate_design,
-                              RESPONSE_STATUS == "Respondent")
+rep_svy_respondents <- replicate_design |>
+  subset(RESPONSE_STATUS == "Respondent")
 ```
 
 After creating the replicate weights, we can rake the survey weights
